@@ -1,0 +1,111 @@
+/* src/components/LanguageDropdown.css */
+
+/* Container to center the dropdown horizontally and position it at the top */
+.language-dropdown-container {
+    position: absolute;
+    top: 20px; /* Adjust as needed for spacing from the top */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; /* Ensure it is above other content */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: #007bff; /* Primary color for the button */
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px; /* Slightly larger radius for a more modern look */
+    text-align: left;
+    width: 220px; /* Adjust width as needed */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between flag and text */
+}
+
+.dropbtn img {
+    width: 24px; /* Adjust size as needed */
+    height: 16px; /* Keep aspect ratio consistent */
+    vertical-align: middle; /* Align flag vertically with text */
+}
+
+.dropbtn:focus {
+    outline: none; /* Remove default focus outline */
+}
+
+.dropdown-content {
+    display: block;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 220px; /* Ensure dropdown width matches button */
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    border-radius: 8px; /* Rounded corners for dropdown */
+    z-index: 1;
+    top: 100%; /* Position dropdown below button */
+    left: 0;
+    max-height: 300px; /* Increased height for more items */
+    overflow-y: auto; /* Add scroll if content overflows */
+    padding: 5px 0; /* Add padding for better spacing */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+}
+
+.dropdown-content.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-content.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensure padding is included in width */
+    margin-bottom: 5px; /* Space below the input field */
+    font-size: 14px; /* Match font size of dropdown items */
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    position: relative; /* For positioning the tick */
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1; /* Background color on hover */
+}
+
+.dropdown-flag {
+    width: 24px; /* Adjust size as needed */
+    height: 16px; /* Keep aspect ratio consistent */
+    margin-right: 10px; /* Space between flag and text */
+    vertical-align: middle; /* Align flag vertically with text */
+}
+
+.tick {
+    margin-left: auto; /* Push the tick to the far right */
+    margin-right: 10px; /* Space between text and tick */
+    width: 20px; /* Size of the tick icon */
+    height: 20px; /* Size of the tick icon */
+}
+
+.tick img {
+    width: 100%; /* Ensure SVG fits within the tick container */
+    height: auto; /* Maintain aspect ratio */
+    filter: invert(20%) sepia(100%) saturate(1000%) hue-rotate(190deg) brightness(90%) contrast(90%); /* Adjust this filter to match the button color */
+}
