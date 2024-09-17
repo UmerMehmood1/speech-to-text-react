@@ -15,7 +15,6 @@ const MicrophoneVisualizer = () => {
   const analyserRef = useRef(null);
   const recognitionRef = useRef(null);
   const silenceTimeoutRef = useRef(null);
-  const ringtoneDetectionRef = useRef(null);
 
   const SILENCE_THRESHOLD = 30;
   const SILENCE_TIMEOUT = 3000;
@@ -25,33 +24,6 @@ const MicrophoneVisualizer = () => {
       stopListening(true);
     };
   }, []);
-
-  const detectRingtone = (dataArray) => {
-    if (!audioContextRef.current) {
-      return false;
-    }
-
-    const ringtoneFrequencyRanges = [
-      { min: 400, max: 450 }, // Adjust these ranges based on known ringtone frequencies
-    ];
-
-    const sampleRate = audioContextRef.current.sampleRate;
-    for (let i = 0; i < dataArray.length; i++) {
-      const frequency = i * (sampleRate / analyserRef.current.fftSize);
-      const amplitude = dataArray[i];
-      if (
-        ringtoneFrequencyRanges.some(
-          (range) =>
-            frequency >= range.min &&
-            frequency <= range.max &&
-            amplitude > SILENCE_THRESHOLD
-        )
-      ) {
-        return true;
-      }
-    }
-    return false;
-  };
 
   const startListening = async () => {
     if (isListening) return;
@@ -77,12 +49,6 @@ const MicrophoneVisualizer = () => {
         analyserRef.current.getByteFrequencyData(dataArray);
         const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
         setRadius(50 + average / 4);
-
-        if (detectRingtone(dataArray)) {
-          showToast("Ringtone detected. Stopping listening.");
-          stopListening(true);
-          return;
-        }
 
         if (average < SILENCE_THRESHOLD) {
           if (!silenceTimeoutRef.current) {
