@@ -1,5 +1,4 @@
 [
-    { "code": "auto", "name": "Auto Detect", "flag": "https://flagcdn.com/w320/world.png" },
     { "code": "en-US", "name": "English (US)", "flag": "https://flagcdn.com/w320/us.png" },
     { "code": "es-ES", "name": "Spanish", "flag": "https://flagcdn.com/w320/es.png" },
     { "code": "fr-FR", "name": "French", "flag": "https://flagcdn.com/w320/fr.png" },
