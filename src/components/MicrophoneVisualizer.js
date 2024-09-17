@@ -11,7 +11,7 @@ const MicrophoneVisualizer = () => {
     const analyserRef = useRef(null);
     const recognitionRef = useRef(null);
     const silenceTimeoutRef = useRef(null);
-    const SILENCE_THRESHOLD = 10; // Adjust this threshold as needed
+    const SILENCE_THRESHOLD = 100; // Adjust this threshold as needed
     const SILENCE_TIMEOUT = 1000; // Time in milliseconds to wait before stopping
 
     useEffect(() => {
