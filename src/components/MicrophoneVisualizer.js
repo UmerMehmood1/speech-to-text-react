@@ -67,7 +67,7 @@ const MicrophoneVisualizer = () => {
             recognition.interimResults = true;
             recognition.lang = language;
 
-           recognition.onresult = (event) => {
+            recognition.onresult = (event) => {
                 let interimTranscript = '';
                 let finalTranscript = transcript; // Initialize with the previous transcript
             
@@ -85,8 +85,6 @@ const MicrophoneVisualizer = () => {
                 // Update the live transcript with both final and interim results
                 setTranscript(finalTranscript + interimTranscript);
             };
-
-
 
             recognition.onerror = (event) => {
                 console.error('Speech recognition error detected:', event.error);
@@ -131,6 +129,7 @@ const MicrophoneVisualizer = () => {
     const handleLanguageChange = (code) => {
         setLanguage(code);
         if (isListening) {
+            stopListening();  // Stop first before restarting with new language
             startListening();
         }
     };
