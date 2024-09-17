@@ -134,7 +134,7 @@ const MicrophoneVisualizer = () => {
         if (!isListening) {
             startListening();
         } else {
-            stopListening(true); // Immediate clear when stopping
+            stopListening(); // Remove immediate parameter to retain previous text
         }
     };
 
