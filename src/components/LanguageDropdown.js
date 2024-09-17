@@ -22,7 +22,7 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
             })
             .then(data => {
                 // Ensure English is selected by default
-                const defaultLanguageCode = 'en-US';
+                const defaultLanguageCode = 'auto';
                 let sortedLanguages = data;
 
                 // Move English to the top
