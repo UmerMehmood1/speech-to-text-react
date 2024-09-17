@@ -41,8 +41,15 @@
     top: 100%;
     left: 0;
     right: 0;
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: 300px; /* Ensure this is high enough to fit the content */
+    overflow: hidden; /* Hide overflowing content */
+    opacity: 0;
+    transition: opacity 0.3s ease, max-height 0.3s ease; /* Smooth transition for opacity and height */
+}
+
+.dropdown-content.open {
+    opacity: 1;
+    max-height: 300px; /* Adjust as needed */
 }
 
 .search-input {
