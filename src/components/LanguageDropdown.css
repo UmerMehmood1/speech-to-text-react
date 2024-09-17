@@ -30,10 +30,10 @@
     position: absolute;
     background-color: #ffffff;
     min-width: 100px; /* Minimum width for dropdown */
+    max-height: 300px; /* Fixed height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-    max-height: 300px; /* Optional: Max height to enable scrolling if necessary */
-    overflow-y: auto; /* Enable vertical scrolling */
     transition: opacity 0.3s ease-in-out; /* Smooth transition */
 }
 
