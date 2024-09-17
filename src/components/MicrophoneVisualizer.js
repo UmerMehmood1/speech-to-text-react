@@ -73,7 +73,10 @@ const MicrophoneVisualizer = () => {
                     for (let i = event.resultIndex; i < event.results.length; i++) {
                         const result = event.results[i];
                         if (result.isFinal) {
-                            // Directly append the final result to the previous transcript
+                            // Append the final result to the transcript
+                            updatedTranscript += ' ' + result[0].transcript;
+                        } else {
+                            // Append the interim result but don't save it permanently
                             updatedTranscript += ' ' + result[0].transcript;
                         }
                     }
