@@ -19,7 +19,7 @@ const MicrophoneVisualizer = () => {
     useEffect(() => {
         // Clean up function to stop listening when the component is unmounted
         return () => {
-            stopListening();
+            stopListening(true); // Ensure cleanup
         };
     }, []);
 
@@ -96,7 +96,7 @@ const MicrophoneVisualizer = () => {
 
             recognition.onerror = (event) => {
                 showToast('Speech recognition error: ' + event.error);
-                stopListening();
+                stopListening(true); // Pass true to ensure immediate stop
             };
 
             recognition.start();
@@ -109,7 +109,7 @@ const MicrophoneVisualizer = () => {
         }
     };
 
-    const stopListening = () => {
+    const stopListening = (immediate = false) => {
         if (audioContextRef.current) {
             audioContextRef.current.close();
             audioContextRef.current = null;
@@ -124,22 +124,24 @@ const MicrophoneVisualizer = () => {
         }
         setIsListening(false); // Update state to reflect that listening has stopped
 
-        // Clear the transcript when completely stopped
-        setTranscript('');
+        // Clear the transcript immediately if required
+        if (immediate) {
+            setTranscript(''); // Ensure transcript is cleared immediately
+        }
     };
 
     const toggleListening = () => {
         if (!isListening) {
             startListening();
         } else {
-            stopListening();
+            stopListening(true); // Immediate clear when stopping
         }
     };
 
     const handleLanguageChange = (code) => {
         setLanguage(code);
         if (isListening) {
-            stopListening();  // Stop first before restarting with new language
+            stopListening(true);  // Stop first before restarting with new language
             startListening();
         }
     };
@@ -168,7 +170,7 @@ const MicrophoneVisualizer = () => {
             <div className="transcript">
                 <p>{transcript || "Say something..."}</p>
             </div>
-            <button onClick={toggleListening} style={{ backgroundColor: 'blue', color: 'white' }}>
+            <button onClick={toggleListening}>
                 {isListening ? 'Stop Listening' : 'Start Listening'}
             </button>
         </div>
