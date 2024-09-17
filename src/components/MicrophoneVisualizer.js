@@ -84,6 +84,7 @@ const MicrophoneVisualizer = () => {
             
                 // Update the live transcript with both final and interim results
                 setTranscript(finalTranscript + interimTranscript);
+                stopListening();
             };
 
             recognition.onerror = (event) => {
