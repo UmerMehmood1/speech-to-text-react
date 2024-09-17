@@ -6,6 +6,7 @@
     height: 100vh;
     background-color: #282c34;
     color: #fff;
+    font-family: Arial, sans-serif;
 }
 
 .language-dropdown-container {
@@ -16,36 +17,44 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #444;
-}
-
-.microphone-icon {
-    width: 24px;
-    height: 24px;
+    background-color: #61dafb;
+    border: 3px solid #21a1f1;
+    transition: all 0.3s ease-out;
 }
 
 .transcript {
-    margin: 20px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.2em;
 }
 
 .mic-button {
-    background-color: #007bff; /* Blue color for the button */
+    background: none;
     border: none;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
-    outline: none;
-    transition: background-color 0.3s;
+    margin-top: 20px;
 }
 
-.mic-button.listening {
-    background-color: grey; /* Grey color when listening */
-}
-
-.mic-button svg {
+.microphone-icon {
+    width: 50px;
+    height: 50px;
     fill: #fff;
+}
+
+.listening .microphone-icon {
+    fill: #f00; /* Change color when listening */
+}
+
+/* Add the Toast styling */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 1em;
 }
