@@ -113,7 +113,7 @@ const MicrophoneVisualizer = () => {
         setIsListening(false);
 
         if (immediate) {
-            setTranscript('');
+            setTranscript(''); // Clear transcript if stopped immediately
         }
     };
 
@@ -157,8 +157,10 @@ const MicrophoneVisualizer = () => {
             <div className="transcript">
                 <p>{transcript || "Say something..."}</p>
             </div>
-            <button className="toggle-button" onClick={toggleListening}>
-                {isListening ? 'Stop Listening' : 'Start Listening'}
+            <button className={`mic-button ${isListening ? 'listening' : ''}`} onClick={toggleListening}>
+                <svg className="microphone-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 14c1.104 0 2-.896 2-2V8c0-1.104-.896-2-2-2s-2 .896-2 2v4c0 1.104.896 2 2 2zm0 2c-2.209 0-4 1.791-4 4h8c0-2.209-1.791-4-4-4zm6-4v-2c0-3.313-2.687-6-6-6s-6 2.687-6 6v2c0 .553.447 1 1 1h10c.553 0 1-.447 1-1zm2 2h-2v-2c0-4.418-3.582-8-8-8s-8 3.582-8 8v2H4c-1.104 0-2 .896-2 2v1c0 1.104.896 2 2 2h2v1.586c0 .665.419 1.283 1.054 1.511.683.285 1.473.266 2.095-.037 1.057-.511 2.033-1.203 2.875-2.025 1.65-1.576 2.975-3.527 3.975-5.519.234-.462.356-.955.356-1.458V16c0 1.104.896 2 2 2h2c1.104 0 2-.896 2-2v-1c0-1.104-.896-2-2-2z" fill="#fff" />
+                </svg>
             </button>
         </div>
     );
