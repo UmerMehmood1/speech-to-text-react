@@ -68,21 +68,24 @@ const MicrophoneVisualizer = () => {
             recognition.lang = language;
 
            recognition.onresult = (event) => {
-                setTranscript((prevTranscript) => {
-                    let updatedTranscript = prevTranscript;
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const result = event.results[i];
-                        if (result.isFinal) {
-                            // Append the final result to the transcript
-                            updatedTranscript += ' ' + result[0].transcript;
-                        } else {
-                            // Append the interim result but don't save it permanently
-                            updatedTranscript += ' ' + result[0].transcript;
-                        }
+                let interimTranscript = '';
+                let finalTranscript = transcript; // Initialize with the previous transcript
+            
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const result = event.results[i];
+                    if (result.isFinal) {
+                        // Append final result to the transcript
+                        finalTranscript += ' ' + result[0].transcript;
+                    } else {
+                        // Capture interim result for real-time display
+                        interimTranscript += ' ' + result[0].transcript;
                     }
-                    return updatedTranscript;
-                });
+                }
+            
+                // Update the live transcript with both final and interim results
+                setTranscript(finalTranscript + interimTranscript);
             };
+
 
 
             recognition.onerror = (event) => {
