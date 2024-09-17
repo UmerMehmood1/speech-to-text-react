@@ -25,7 +25,7 @@ const MicrophoneVisualizer = () => {
 
     const startListening = async () => {
         if (isListening) return; // Prevent starting multiple times
-        setTranscript("")
+        setTranscript(""); // Reset transcript when starting
         try {
             // Check if internet is available
             if (!navigator.onLine) {
@@ -75,17 +75,20 @@ const MicrophoneVisualizer = () => {
             recognition.interimResults = true;
             recognition.lang = language;
 
-          recognition.onresult = (event) => {
-        // Extract the final results from the event results
-        const finalTranscript = Array.from(event.results)
-            .filter(result => result.isFinal)
-            .map(result => result[0].transcript)
-            .join(' ');
-    
-        // Directly update the transcript with the final result
-        setTranscript(finalTranscript.trim());
-    };
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
 
+                Array.from(event.results).forEach(result => {
+                    if (result.isFinal) {
+                        finalTranscript += result[0].transcript + ' ';
+                    } else {
+                        interimTranscript += result[0].transcript + ' ';
+                    }
+                });
+
+                setTranscript(finalTranscript.trim() + interimTranscript.trim());
+            };
 
             recognition.onerror = (event) => {
                 showToast('Speech recognition error: ' + event.error);
