@@ -60,7 +60,7 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
-    
+
     return (
         <div className="language-dropdown-container">
             <div className="dropdown" role="listbox" aria-labelledby="language-selector">
@@ -107,5 +107,6 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
             </div>
         </div>
     );
+};
 
 export default LanguageDropdown;
