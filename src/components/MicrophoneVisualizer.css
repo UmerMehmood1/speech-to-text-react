@@ -22,6 +22,11 @@
     transition: all 0.3s ease-out;
 }
 
+.circle-wave {
+    font-size: 2em;
+    color: #fff;
+}
+
 .transcript {
     margin-top: 20px;
     text-align: center;
@@ -35,14 +40,13 @@
     margin-top: 20px;
 }
 
-.microphone-icon {
-    width: 50px;
-    height: 50px;
-    fill: #fff;
+.mic-button i {
+    font-size: 2em;
+    color: #fff;
 }
 
-.listening .microphone-icon {
-    fill: #f00; /* Change color when listening */
+.listening .mic-button i {
+    color: #f00; /* Change color when listening */
 }
 
 /* Add the Toast styling */
