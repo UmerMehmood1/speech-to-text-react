@@ -1,147 +1,40 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 import "./MicrophoneVisualizer.css";
 import LanguageDropdown from "./LanguageDropdown";
 import Toast from "./Toast";
 
 const MicrophoneVisualizer = () => {
-  const [isListening, setIsListening] = useState(false);
-  const [radius, setRadius] = useState(50);
-  const [transcript, setTranscript] = useState("");
   const [language, setLanguage] = useState("en-US");
   const [toastMessage, setToastMessage] = useState("");
-  const [storedTranscript, setStoredTranscript] = useState("");
+  const [accumulatedTranscript, setAccumulatedTranscript] = useState(""); // State for accumulated transcript
 
-  const audioContextRef = useRef(null);
-  const analyserRef = useRef(null);
-  const recognitionRef = useRef(null);
-  const silenceTimeoutRef = useRef(null);
+  const {
+    transcript,
+    resetTranscript,
+    listening,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
 
-  const SILENCE_THRESHOLD = 30;
-  const SILENCE_TIMEOUT = 3000;
-
-  useEffect(() => {
-    return () => {
-      stopListening(true);
-    };
-  }, []);
-
-  const startListening = async () => {
-    if (isListening) return;
-    setTranscript("");
-    try {
-      if (!navigator.onLine) {
-        showToast("No internet connection!");
-        return;
-      }
-
-      audioContextRef.current = new (window.AudioContext ||
-        window.webkitAudioContext)();
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const source = audioContextRef.current.createMediaStreamSource(stream);
-
-      analyserRef.current = audioContextRef.current.createAnalyser();
-      source.connect(analyserRef.current);
-      analyserRef.current.fftSize = 512;
-      const bufferLength = analyserRef.current.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-
-      const updateCircleSize = () => {
-        analyserRef.current.getByteFrequencyData(dataArray);
-        const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-        setRadius(50 + average / 4);
-
-        if (average < SILENCE_THRESHOLD) {
-          if (!silenceTimeoutRef.current) {
-            silenceTimeoutRef.current = setTimeout(() => {
-              stopListening();
-            }, SILENCE_TIMEOUT);
-          }
-        } else {
-          if (silenceTimeoutRef.current) {
-            clearTimeout(silenceTimeoutRef.current);
-            silenceTimeoutRef.current = null;
-          }
-        }
-        requestAnimationFrame(updateCircleSize);
-      };
-      updateCircleSize();
-
-      const recognition = new (window.SpeechRecognition ||
-        window.webkitSpeechRecognition)();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = language;
-
-      recognition.onresult = (event) => {
-        let interimTranscript = "";
-        let finalTranscript = "";
-
-        Array.from(event.results).forEach((result) => {
-          if (result.isFinal) {
-            finalTranscript += result[0].transcript + " ";
-          } else {
-            interimTranscript += result[0].transcript + " ";
-          }
-        });
-
-        setTranscript(finalTranscript.trim() + interimTranscript.trim());
-        console.log(transcript);
-      };
-
-      recognition.onerror = (event) => {
-        showToast("Speech recognition error: " + event.error);
-        stopListening(true);
-      };
-
-      recognition.start();
-      recognitionRef.current = recognition;
-      setIsListening(true);
-    } catch (error) {
-      console.error(
-        "Error accessing microphone or starting speech recognition",
-        error
-      );
-      showToast("Error accessing microphone or starting speech recognition");
-    }
-  };
-
-  const stopListening = (immediate = false) => {
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      recognitionRef.current = null;
-    }
-    if (silenceTimeoutRef.current) {
-      clearTimeout(silenceTimeoutRef.current);
-      silenceTimeoutRef.current = null;
-    }
-    setIsListening(false);
-
-    if (immediate) {
-      setTranscript("");
+  const handleLanguageChange = (code) => {
+    setLanguage(code);
+    if (listening) {
+      SpeechRecognition.stopListening();
+      SpeechRecognition.startListening({ continuous: true, language: code });
     }
   };
 
   const toggleListening = () => {
-    if (!isListening) {
-      startListening();
+    if (listening) {
+      // Accumulate the final transcript and reset the current transcript
+      setAccumulatedTranscript((prev) => prev + " " + transcript);
+      SpeechRecognition.stopListening();
+      resetTranscript();
     } else {
-      setStoredTranscript(
-        (prevTranscript) => prevTranscript + " " + transcript
-      );
-      setTranscript("");
-      stopListening();
-    }
-  };
-
-  const handleLanguageChange = (code) => {
-    setLanguage(code);
-    if (isListening) {
-      stopListening(true);
-      startListening();
+      // Start listening
+      SpeechRecognition.startListening({ continuous: true, language });
     }
   };
 
@@ -153,17 +46,23 @@ const MicrophoneVisualizer = () => {
   };
 
   const copyToClipboard = () => {
-    if (storedTranscript) {
+    const fullTranscript = accumulatedTranscript + " " + transcript;
+    if (fullTranscript) {
       navigator.clipboard
-        .writeText(storedTranscript)
+        .writeText(fullTranscript)
         .then(() => showToast("Transcript copied to clipboard!"))
-        .catch((err) => showToast("Failed to copy transcript."));
+        .catch(() => showToast("Failed to copy transcript."));
     }
   };
 
   const removeTranscript = () => {
-    setStoredTranscript("");
+    setAccumulatedTranscript(""); // Clear accumulated transcript
+    resetTranscript(); // Clear current transcript
   };
+
+  if (!browserSupportsSpeechRecognition) {
+    return <div>Browser does not support speech recognition.</div>;
+  }
 
   return (
     <div className="visualizer-container">
@@ -176,28 +75,19 @@ const MicrophoneVisualizer = () => {
       </div>
 
       <button
-        className={`mic-btn ${isListening ? "listening" : ""}`}
+        className={`mic-btn ${listening ? "listening" : ""}`}
         onClick={toggleListening}
       >
-        {isListening ? (
-          <i class="fa fa-pause" aria-hidden="true"></i>
+        {listening ? (
+          <i className="fa fa-pause" aria-hidden="true"></i>
         ) : (
-          <i className={`fas fa-microphone `} />
+          <i className="fas fa-microphone" />
         )}
       </button>
-      {isListening ? (
-        <div className="transcript">
-          <p>{storedTranscript + transcript}</p>
-        </div>
-      ) : (
-        <div className="transcript">
-          <p>
-            {storedTranscript.length !== 0
-              ? storedTranscript
-              : "Say something..."}
-          </p>
-        </div>
-      )}
+
+      <div className="transcript">
+        <p>{accumulatedTranscript + " " + transcript || "Say something..."}</p>
+      </div>
 
       <div className="btns">
         <button onClick={copyToClipboard} className="copy-btn">
