@@ -1,64 +1,115 @@
 .visualizer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #282c34;
-    color: #fff;
-    font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #282c34;
+  color: #fff;
+  font-family: Arial, sans-serif;
 }
 
 .language-dropdown-container {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #61dafb;
-    border: 3px solid #21a1f1;
-    transition: all 0.3s ease-out;
 }
 
 .circle-wave {
-    font-size: 2em;
-    color: #fff;
+  font-size: 2em;
+  color: #fff;
 }
 
 .transcript {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 1.2em;
-}
-
-.mic-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-.mic-button i {
-    font-size: 2em;
-    color: #fff;
-}
-
-.listening .mic-button i {
-    color: #f00; /* Change color when listening */
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.2em;
 }
 
 /* Add the Toast styling */
 .toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 1000;
-    font-size: 1em;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  font-size: 1em;
+}
+
+.mic-btn {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #007bff;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.mic-btn .fa-microphone {
+  color: white;
+  font-size: 24px;
+  z-index: 1;
+  transition: transform 0.3s ease-in-out;
+}
+
+.listening {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #61dafb, #21a1f1);
+  position: relative;
+  animation: wave 3s infinite ease-in-out;
+}
+
+.mic-btn::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 0;
+  opacity: 0;
+  animation: wave 1.5s infinite;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(97, 218, 251, 0.5),
+      0 0 20px rgba(33, 161, 241, 0.5);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(97, 218, 251, 0.5),
+      0 0 30px rgba(33, 161, 241, 0.5);
+  }
+}
+.mic-btn.listening::before {
+  opacity: 1;
+  animation: wave 1.5s infinite;
+}
+
+.circle-wave {
+  display: none; /* You can remove this if you're handling waves with JS */
+}
+
+.btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }

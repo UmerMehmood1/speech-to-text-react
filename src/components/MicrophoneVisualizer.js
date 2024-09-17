@@ -1,60 +1,88 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './MicrophoneVisualizer.css';
-import LanguageDropdown from './LanguageDropdown';
-import Toast from './Toast'; // A new Toast component for notifications
+import React, { useState, useEffect, useRef } from "react";
+import "./MicrophoneVisualizer.css";
+import LanguageDropdown from "./LanguageDropdown";
+import Toast from "./Toast";
 
 const MicrophoneVisualizer = () => {
-  // State variables
   const [isListening, setIsListening] = useState(false);
   const [radius, setRadius] = useState(50);
-  const [transcript, setTranscript] = useState('');
-  const [language, setLanguage] = useState('en-US'); // Default language
-  const [toastMessage, setToastMessage] = useState('');
+  const [transcript, setTranscript] = useState("");
+  const [language, setLanguage] = useState("en-US");
+  const [toastMessage, setToastMessage] = useState("");
+  const [storedTranscript, setStoredTranscript] = useState("");
 
-  // Refs
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const recognitionRef = useRef(null);
   const silenceTimeoutRef = useRef(null);
+  const ringtoneDetectionRef = useRef(null);
 
-  // Constants
-  const SILENCE_THRESHOLD = 30; // Increased threshold for better responsiveness
-  const SILENCE_TIMEOUT = 3000; // Time in milliseconds to wait before stopping
+  const SILENCE_THRESHOLD = 30;
+  const SILENCE_TIMEOUT = 3000;
 
-  // Cleanup function
   useEffect(() => {
     return () => {
-      stopListening(true); // Ensure cleanup
+      stopListening(true);
     };
   }, []);
 
-  // Start listening function
+  const detectRingtone = (dataArray) => {
+    if (!audioContextRef.current) {
+      return false;
+    }
+
+    const ringtoneFrequencyRanges = [
+      { min: 400, max: 450 }, // Adjust these ranges based on known ringtone frequencies
+    ];
+
+    const sampleRate = audioContextRef.current.sampleRate;
+    for (let i = 0; i < dataArray.length; i++) {
+      const frequency = i * (sampleRate / analyserRef.current.fftSize);
+      const amplitude = dataArray[i];
+      if (
+        ringtoneFrequencyRanges.some(
+          (range) =>
+            frequency >= range.min &&
+            frequency <= range.max &&
+            amplitude > SILENCE_THRESHOLD
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const startListening = async () => {
-    if (isListening) return; // Prevent starting multiple times
-    setTranscript(""); // Reset transcript when starting
+    if (isListening) return;
+    setTranscript("");
     try {
       if (!navigator.onLine) {
-        showToast('No internet connection!');
+        showToast("No internet connection!");
         return;
       }
 
-      // Create audio context and media stream source
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      audioContextRef.current = new (window.AudioContext ||
+        window.webkitAudioContext)();
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const source = audioContextRef.current.createMediaStreamSource(stream);
 
-      // Create analyser and set up frequency data
       analyserRef.current = audioContextRef.current.createAnalyser();
       source.connect(analyserRef.current);
-      analyserRef.current.fftSize = 512; // Increase FFT size for better frequency resolution
+      analyserRef.current.fftSize = 512;
       const bufferLength = analyserRef.current.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
 
-      // Update circle size function
       const updateCircleSize = () => {
         analyserRef.current.getByteFrequencyData(dataArray);
         const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-        setRadius(50 + average / 4); // Adjust the radius scaling for better responsiveness
+        setRadius(50 + average / 4);
+
+        if (detectRingtone(dataArray)) {
+          showToast("Ringtone detected. Stopping listening.");
+          stopListening(true);
+          return;
+        }
 
         if (average < SILENCE_THRESHOLD) {
           if (!silenceTimeoutRef.current) {
@@ -72,46 +100,45 @@ const MicrophoneVisualizer = () => {
       };
       updateCircleSize();
 
-      // Create speech recognition object
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      const recognition = new (window.SpeechRecognition ||
+        window.webkitSpeechRecognition)();
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = language;
 
-      // Handle speech recognition results
       recognition.onresult = (event) => {
-        let interimTranscript = '';
-        let finalTranscript = '';
+        let interimTranscript = "";
+        let finalTranscript = "";
 
-        Array.from(event.results).forEach(result => {
+        Array.from(event.results).forEach((result) => {
           if (result.isFinal) {
-            finalTranscript += result[0].transcript + ' ';
+            finalTranscript += result[0].transcript + " ";
           } else {
-            interimTranscript += result[0].transcript + ' ';
+            interimTranscript += result[0].transcript + " ";
           }
         });
 
         setTranscript(finalTranscript.trim() + interimTranscript.trim());
+        console.log(transcript);
       };
 
-      // Handle speech recognition errors
       recognition.onerror = (event) => {
-        showToast('Speech recognition error: ' + event.error);
-        stopListening(true); // Pass true to ensure immediate stop
+        showToast("Speech recognition error: " + event.error);
+        stopListening(true);
       };
 
-      // Start speech recognition
       recognition.start();
       recognitionRef.current = recognition;
       setIsListening(true);
-
     } catch (error) {
-      console.error('Error accessing microphone or starting speech recognition', error);
-      showToast('Error accessing microphone or starting speech recognition');
+      console.error(
+        "Error accessing microphone or starting speech recognition",
+        error
+      );
+      showToast("Error accessing microphone or starting speech recognition");
     }
   };
 
-  // Stop listening function
   const stopListening = (immediate = false) => {
     if (audioContextRef.current) {
       audioContextRef.current.close();
@@ -128,60 +155,92 @@ const MicrophoneVisualizer = () => {
     setIsListening(false);
 
     if (immediate) {
-      setTranscript(''); // Clear transcript if stopped immediately
+      setTranscript("");
     }
   };
 
-  // Toggle listening function
   const toggleListening = () => {
     if (!isListening) {
       startListening();
     } else {
-      stopListening(); // Remove immediate parameter to retain previous text
+      setStoredTranscript(
+        (prevTranscript) => prevTranscript + " " + transcript
+      );
+      setTranscript("");
+      stopListening();
     }
   };
 
-  // Handle language change function
   const handleLanguageChange = (code) => {
     setLanguage(code);
     if (isListening) {
-      stopListening(true); // Stop first before restarting with new language
+      stopListening(true);
       startListening();
     }
   };
 
-  // Show toast function
   const showToast = (message) => {
     setToastMessage(message);
     setTimeout(() => {
-      setToastMessage('');
+      setToastMessage("");
     }, 3000);
+  };
+
+  const copyToClipboard = () => {
+    if (storedTranscript) {
+      navigator.clipboard
+        .writeText(storedTranscript)
+        .then(() => showToast("Transcript copied to clipboard!"))
+        .catch((err) => showToast("Failed to copy transcript."));
+    }
+  };
+
+  const removeTranscript = () => {
+    setStoredTranscript("");
   };
 
   return (
     <div className="visualizer-container">
       {toastMessage && <Toast message={toastMessage} />}
       <div className="language-dropdown-container">
-        <LanguageDropdown selectedLanguage={language} onSelectLanguage={handleLanguageChange} />
+        <LanguageDropdown
+          selectedLanguage={language}
+          onSelectLanguage={handleLanguageChange}
+        />
       </div>
-      <div
-        className="circle"
-        style={{
-          width: radius * 2,
-          height: radius * 2,
-          borderRadius: radius,
-          transition: 'all 0.3s ease-out'
-        }}
+
+      <button
+        className={`mic-btn ${isListening ? "listening" : ""}`}
+        onClick={toggleListening}
       >
-        <i className="fas fa-waveform circle-wave"></i>
-        <i className={`fas fa-microphone ${isListening ? 'listening' : ''}`} />
-      </div>
-      <div className="transcript">
-        <p>{transcript || "Say something..."}</p>
-      </div>
-      <button className={`mic-button ${isListening ? 'listening' : ''}`} onClick={toggleListening}>
-        <i className={`fas fa-microphone ${isListening ? 'listening' : ''}`}></i>
+        {isListening ? (
+          <i class="fa fa-pause" aria-hidden="true"></i>
+        ) : (
+          <i className={`fas fa-microphone `} />
+        )}
       </button>
+      {isListening ? (
+        <div className="transcript">
+          <p>{storedTranscript + transcript}</p>
+        </div>
+      ) : (
+        <div className="transcript">
+          <p>
+            {storedTranscript.length !== 0
+              ? storedTranscript
+              : "Say something..."}
+          </p>
+        </div>
+      )}
+
+      <div className="btns">
+        <button onClick={copyToClipboard} className="copy-btn">
+          Copy to Clipboard
+        </button>
+        <button onClick={removeTranscript} className="copy-btn">
+          Clear Transcript
+        </button>
+      </div>
     </div>
   );
 };
