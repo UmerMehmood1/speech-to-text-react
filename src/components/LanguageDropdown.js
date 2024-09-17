@@ -60,7 +60,7 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
-
+    
     return (
         <div className="language-dropdown-container">
             <div className="dropdown" role="listbox" aria-labelledby="language-selector">
@@ -76,39 +76,36 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
                     )}
                     {languages.find(lang => lang.code === selectedLanguage)?.name || 'Select Language'}
                 </button>
-                {isOpen && (
-                    <div className="dropdown-content">
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            className="search-input"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                        />
-                        <ul role="listbox">
-                            {filteredLanguages.map((lang) => (
-                                <li
-                                    key={lang.code}
-                                    className={`dropdown-item ${lang.code === selectedLanguage ? 'selected' : ''}`}
-                                    role="option"
-                                    aria-selected={lang.code === selectedLanguage}
-                                    onClick={() => handleLanguageSelect(lang.code)}
-                                >
-                                    <img src={lang.flag} alt={`Flag of ${lang.name}`} className="dropdown-flag" />
-                                    {lang.name} ({lang.code})
-                                    {lang.code === selectedLanguage && (
-                                        <span className="tick">
-                                            <img src="https://cdn.jsdelivr.net/npm/heroicons@1.0.6/outline/check-circle.svg" alt="Tick" />
-                                        </span>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
+                <div className={`dropdown-content ${isOpen ? 'open' : ''}`}>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        className="search-input"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                    <ul role="listbox">
+                        {filteredLanguages.map((lang) => (
+                            <li
+                                key={lang.code}
+                                className={`dropdown-item ${lang.code === selectedLanguage ? 'selected' : ''}`}
+                                role="option"
+                                aria-selected={lang.code === selectedLanguage}
+                                onClick={() => handleLanguageSelect(lang.code)}
+                            >
+                                <img src={lang.flag} alt={`Flag of ${lang.name}`} className="dropdown-flag" />
+                                {lang.name} ({lang.code})
+                                {lang.code === selectedLanguage && (
+                                    <span className="tick">
+                                        <img src="https://cdn.jsdelivr.net/npm/heroicons@1.0.6/outline/check-circle.svg" alt="Tick" />
+                                    </span>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </div>
     );
-};
 
 export default LanguageDropdown;
