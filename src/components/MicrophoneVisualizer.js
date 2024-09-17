@@ -67,13 +67,20 @@ const MicrophoneVisualizer = () => {
             recognition.interimResults = true;
             recognition.lang = language;
 
-            recognition.onresult = (event) => {
-                const current = event.resultIndex;
-                const resultTranscript = event.results[current][0].transcript;
-
-                // Append the new transcript to the previous one instead of replacing it
-                setTranscript(prevTranscript => prevTranscript + ' ' + resultTranscript);
+           recognition.onresult = (event) => {
+                let newTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const result = event.results[i];
+                    if (result.isFinal) {
+                        // If the result is final, append it to the existing transcript
+                        newTranscript += result[0].transcript;
+                    }
+                }
+            
+                // Accumulate the new final results to the previous transcript
+                setTranscript((prevTranscript) => prevTranscript + ' ' + newTranscript);
             };
+
 
             recognition.onerror = (event) => {
                 console.error('Speech recognition error detected:', event.error);
