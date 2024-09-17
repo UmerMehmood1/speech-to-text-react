@@ -1,5 +1,3 @@
-// src/components/MicrophoneVisualizer.js
-
 import React, { useState, useEffect, useRef } from 'react';
 import './MicrophoneVisualizer.css';
 import LanguageDropdown from './LanguageDropdown';
@@ -72,7 +70,9 @@ const MicrophoneVisualizer = () => {
             recognition.onresult = (event) => {
                 const current = event.resultIndex;
                 const resultTranscript = event.results[current][0].transcript;
-                setTranscript(resultTranscript);
+
+                // Append the new transcript to the previous one instead of replacing it
+                setTranscript(prevTranscript => prevTranscript + ' ' + resultTranscript);
             };
 
             recognition.onerror = (event) => {
@@ -102,6 +102,9 @@ const MicrophoneVisualizer = () => {
             silenceTimeoutRef.current = null;
         }
         setIsListening(false); // Update state to reflect that listening has stopped
+
+        // Clear the transcript when completely stopped
+        setTranscript('');
     };
 
     const toggleListening = () => {
