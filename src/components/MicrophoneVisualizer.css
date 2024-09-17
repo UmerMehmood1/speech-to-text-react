@@ -1,72 +1,55 @@
-/* src/components/MicrophoneVisualizer.css */
-
 .visualizer-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    background-color: #f5f5f5;
+    min-height: 100vh;
+    background-color: #f0f0f0;
     padding: 20px;
-    box-sizing: border-box;
+}
+
+.language-dropdown-container {
+    margin-bottom: 20px;
 }
 
 .circle {
-    background-color: #007bff;
-    border: 2px solid #0056b3;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
-    transition: width 0.1s, height 0.1s;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: blue;
+    border: 5px solid white;
+    color: white;
+    transition: width 0.2s ease, height 0.2s ease;
 }
 
 .microphone-icon {
-    width: 48px;
-    height: 48px;
-    fill: #fff;
-    position: absolute;
+    width: 24px;
+    height: 24px;
 }
 
 .transcript {
-    margin-bottom: 20px;
+    margin-top: 20px;
     text-align: center;
-    max-width: 80%;
-    padding: 15px; /* Added padding */
-    border: 2px solid #007bff; /* Added border with blue color */
-    border-radius: 8px; /* Optional: adds rounded corners */
-    background-color: #f0f8ff; /* Optional: light background color to complement the border */
-}
-
-.transcript p {
-    font-size: 18px;
-    color: #333;
+    max-width: 600px;
     word-wrap: break-word;
-    line-height: 1.5;
 }
 
 button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    background-color: #007bff;
+    background-color: blue;
     color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    background-color: darkblue;
 }
 
-button:active {
-    background-color: #004494;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+button:focus {
+    outline: none;
 }
