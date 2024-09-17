@@ -1,5 +1,3 @@
-// src/components/LanguageDropdown.js
-
 import React, { useState, useEffect } from 'react';
 import './LanguageDropdown.css';
 
@@ -21,12 +19,11 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
                 return response.json();
             })
             .then(data => {
-                // Ensure English is selected by default
                 const defaultLanguageCode = 'auto';
                 let sortedLanguages = data;
 
-                // Move English to the top
-                sortedLanguages = sortedLanguages.sort((a, b) => {
+                // Move default language (e.g., English) to the top
+                sortedLanguages.sort((a, b) => {
                     if (a.code === defaultLanguageCode) return -1;
                     if (b.code === defaultLanguageCode) return 1;
                     return a.name.localeCompare(b.name);
@@ -35,7 +32,7 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
                 setLanguages(sortedLanguages);
                 setFilteredLanguages(sortedLanguages);
 
-                // Set English as the default selected language if none is selected
+                // Set default language if none is selected
                 if (!selectedLanguage) {
                     onSelectLanguage(defaultLanguageCode);
                 }
@@ -60,6 +57,10 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
         setIsOpen(false);
     };
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
     return (
         <div className="language-dropdown-container">
             <div className="dropdown" role="listbox" aria-labelledby="language-selector">
@@ -82,7 +83,7 @@ const LanguageDropdown = ({ selectedLanguage, onSelectLanguage }) => {
                             placeholder="Search..."
                             className="search-input"
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={handleSearchChange}
                         />
                         <ul role="listbox">
                             {filteredLanguages.map((lang) => (
