@@ -1,5 +1,3 @@
-// src/components/MicrophoneVisualizer.js
-
 import React, { useState, useEffect, useRef } from 'react';
 import './MicrophoneVisualizer.css';
 import LanguageDropdown from './LanguageDropdown';
@@ -27,6 +25,9 @@ const MicrophoneVisualizer = () => {
         if (isListening) return; // Prevent starting multiple times
 
         try {
+            // Clear the transcript when starting to listen
+            setTranscript('');
+
             // Set up the Web Audio API
             audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -72,7 +73,9 @@ const MicrophoneVisualizer = () => {
             recognition.onresult = (event) => {
                 const current = event.resultIndex;
                 const resultTranscript = event.results[current][0].transcript;
-                setTranscript(resultTranscript);
+                
+                // Concatenate the new transcript with the previous one
+                setTranscript(prevTranscript => prevTranscript + ' ' + resultTranscript);
             };
 
             recognition.onerror = (event) => {
