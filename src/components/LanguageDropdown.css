@@ -8,83 +8,65 @@
 }
 
 .dropbtn {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    font-size: 1rem;
+    background-color: #f1f1f1;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
+    padding: 10px;
+    font-size: 16px;
+    text-align: left;
     display: flex;
     align-items: center;
-    gap: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.dropbtn:hover {
-    background-color: #0056b3;
+    width: 100%; /* Ensure button spans full width of container */
 }
 
 .dropdown-flag {
-    width: 24px;
-    height: 16px;
-    object-fit: cover;
+    width: 20px;
+    height: 15px;
+    margin-right: 8px;
 }
 
 .dropdown-content {
+    display: none;
     position: absolute;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 300px; /* Ensure this is high enough to fit the content */
-    overflow: hidden; /* Hide overflowing content */
-    opacity: 0;
-    transition: opacity 0.3s ease, max-height 0.3s ease; /* Smooth transition for opacity and height */
+    background-color: #ffffff;
+    min-width: 100px; /* Minimum width for dropdown */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    max-height: 300px; /* Optional: Max height to enable scrolling if necessary */
+    overflow-y: auto; /* Enable vertical scrolling */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition */
 }
 
 .dropdown-content.open {
-    opacity: 1;
-    max-height: 300px; /* Adjust as needed */
+    display: block;
 }
 
 .search-input {
+    box-sizing: border-box;
     width: 100%;
-    padding: 10px;
-    border: none;
-    border-bottom: 1px solid #ccc;
-    font-size: 1rem;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
 }
 
 .dropdown-item {
-    padding: 10px 15px;
+    padding: 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 10px;
-    transition: background-color 0.3s ease;
 }
 
 .dropdown-item:hover {
     background-color: #f1f1f1;
 }
 
-.dropdown-item.selected {
-    background-color: #007bff;
-    color: #fff;
-}
-
-.tick {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
+.selected {
+    background-color: #e0e0e0;
 }
 
 .tick img {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
 }
