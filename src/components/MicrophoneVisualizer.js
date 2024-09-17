@@ -25,7 +25,7 @@ const MicrophoneVisualizer = () => {
 
     const startListening = async () => {
         if (isListening) return; // Prevent starting multiple times
-
+        setTranscript("")
         try {
             // Check if internet is available
             if (!navigator.onLine) {
