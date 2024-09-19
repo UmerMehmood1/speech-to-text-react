@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Select from "react-select";
 import {
   FaMoon,
   FaSun,
@@ -11,19 +12,6 @@ import useSpeechRecognitionJs from "./useSpeechRecognition";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import languages from "../langauges-data/languages";
-
-const languageOptions = [
-  { label: "Cambodian", value: "km-KH" },
-  { label: "Deutsch", value: "de-DE" },
-  { label: "English", value: "en-AU" },
-  { label: "Farsi", value: "fa-IR" },
-  { label: "Français", value: "fr-FR" },
-  { label: "Italiano", value: "it-IT" },
-  { label: "普通话 (中国大陆) - Mandarin", value: "zh" },
-  { label: "Portuguese", value: "pt-BR" },
-  { label: "Español", value: "es-MX" },
-  { label: "Svenska - Swedish", value: "sv-SE" },
-];
 
 const SpeechRecognition = () => {
   const [lang, setLang] = useState("en-AU");
@@ -40,13 +28,12 @@ const SpeechRecognition = () => {
     if (result) {
       setValue(result);
     } else {
-      console.log("object");
       setValue("");
     }
   };
 
-  const changeLang = (event) => {
-    setLang(event.target.value);
+  const changeLang = (selectedOption) => {
+    setLang(selectedOption.value);
   };
 
   const onError = (event) => {
@@ -103,6 +90,62 @@ const SpeechRecognition = () => {
     toast.success("Successfully Removed The Transcripts");
   };
 
+  // Convert languages array to options for react-select
+  const languageOptions = languages.map((language) => ({
+    value: language.code,
+    label: language.name,
+  }));
+
+  // Custom styles for react-select
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      borderColor: state.isFocused
+        ? "rgba(99, 102, 241, 0.5)"
+        : "rgba(156, 163, 175, 0.5)",
+      boxShadow: state.isFocused ? "0 0 0 1px rgba(99, 102, 241, 0.5)" : "none",
+      backgroundColor: isDarkMode ? "#374151" : "#f3f4f6", // dark mode background color
+      color: "#ffffff",
+
+      "&:hover": {
+        borderColor: "rgba(99, 102, 241, 0.5)",
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: isDarkMode ? "#374151" : "#f3f4f6", // dark mode background color
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected
+        ? "#dbeafe"
+        : isDarkMode
+        ? "#4b5563"
+        : "#f3f4f6", // dark mode background color
+      color: state.isSelected ? "#1d4ed8" : isDarkMode ? "#ffffff" : "#4a4a4a",
+      cursor: "pointer",
+      "&:active": {
+        backgroundColor: "#cbd5e1",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: isDarkMode ? "#ffffff" : "#4a4a4a",
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: isDarkMode ? "#ffffff" : "#4a4a4a",
+    }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      color: isDarkMode ? "#ffffff" : "#4a4a4a",
+    }),
+    indicatorSeparator: (provided) => ({
+      ...provided,
+      backgroundColor: isDarkMode ? "#ffffff" : "#4a4a4a",
+    }),
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <form
@@ -135,6 +178,8 @@ const SpeechRecognition = () => {
             <p className="text-gray-600 dark:text-gray-300">
               {`Click 'Record Icon' to start speaking. SpeechRecognition will provide a transcript of what you are saying.`}
             </p>
+
+            {/* Searchable Dropdown for Languages */}
             <div className="flex flex-col space-y-2">
               <label
                 htmlFor="language"
@@ -142,20 +187,17 @@ const SpeechRecognition = () => {
               >
                 Language
               </label>
-              <select
-                form="speech-recognition-form"
+              <Select
                 id="language"
-                value={lang}
+                options={languageOptions}
+                value={languageOptions.find((option) => option.value === lang)}
                 onChange={changeLang}
-                className="border rounded-md p-2 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
-              >
-                {languages.map((option) => (
-                  <option key={option.code} value={option.code}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
+                className="basic-single"
+                classNamePrefix="select"
+                styles={customStyles}
+              />
             </div>
+
             <div className="flex flex-col space-y-2">
               <label
                 htmlFor="transcript"
