@@ -9,7 +9,7 @@ import Toast from "./Toast";
 const MicrophoneVisualizer = () => {
   const [language, setLanguage] = useState("en-US");
   const [toastMessage, setToastMessage] = useState("");
-  const [accumulatedTranscript, setAccumulatedTranscript] = useState(""); // State for accumulated transcript
+  const [transcriptEntries, setTranscriptEntries] = useState([]); // State for transcript entries
 
   const {
     transcript,
@@ -28,25 +28,31 @@ const MicrophoneVisualizer = () => {
 
   const toggleListening = () => {
     if (listening) {
-      // Accumulate the final transcript and reset the current transcript
-      setAccumulatedTranscript((prev) => prev + " " + transcript);
+      // Add the current transcript to the entries list
+      appendEntries();
       SpeechRecognition.stopListening();
       resetTranscript();
     } else {
       // Start listening
       SpeechRecognition.startListening({ continuous: true, language });
+      appendEntries();
     }
   };
-
+  const appendEntries = () => {
+    setTranscriptEntries((prevEntries) => [...prevEntries, transcript]);
+    logEntries();
+  };
   const showToast = (message) => {
     setToastMessage(message);
     setTimeout(() => {
       setToastMessage("");
     }, 3000);
   };
-
+  const logEntries = () => {
+    console.log(transcriptEntries);
+  };
   const copyToClipboard = () => {
-    const fullTranscript = accumulatedTranscript + " " + transcript;
+    const fullTranscript = transcriptEntries.join(" ") + " " + transcript;
     if (fullTranscript) {
       navigator.clipboard
         .writeText(fullTranscript)
@@ -56,7 +62,7 @@ const MicrophoneVisualizer = () => {
   };
 
   const removeTranscript = () => {
-    setAccumulatedTranscript(""); // Clear accumulated transcript
+    setTranscriptEntries([]); // Clear transcript entries
     resetTranscript(); // Clear current transcript
   };
 
@@ -85,9 +91,7 @@ const MicrophoneVisualizer = () => {
         )}
       </button>
 
-      <div className="transcript">
-        <p>{accumulatedTranscript + " " + transcript || "Say something..."}</p>
-      </div>
+      <div className="transcript">{transcript}</div>
 
       <div className="btns">
         <button onClick={copyToClipboard} className="copy-btn">

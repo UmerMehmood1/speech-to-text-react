@@ -1,16 +1,13 @@
 // src/App.js
-import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import React from "react";
-import "./App.css";
-import MicrophoneVisualizer from "./components/MicrophoneVisualizer";
-
-function App() {
+import SpeechRecognition from "./components/SpeechRecognition";
+import { ToastContainer } from "react-toastify";
+export default function App() {
   return (
-    <div className="App">
-      <MicrophoneVisualizer />
+    <div>
+      <ToastContainer />
+      <SpeechRecognition />
     </div>
   );
 }
-
-export default App;
