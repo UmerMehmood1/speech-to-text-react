@@ -10,6 +10,7 @@ import {
 import useSpeechRecognitionJs from "./useSpeechRecognition";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import languages from "../langauges-data/languages";
 
 const languageOptions = [
   { label: "Cambodian", value: "km-KH" },
@@ -38,6 +39,9 @@ const SpeechRecognition = () => {
   const onResult = (result) => {
     if (result) {
       setValue(result);
+    } else {
+      console.log("object");
+      setValue("");
     }
   };
 
@@ -105,8 +109,8 @@ const SpeechRecognition = () => {
         id="speech-recognition-form"
         className="space-y-6 p-6 max-w-xl w-full mx-auto bg-white dark:bg-gray-800 shadow-md rounded-md"
       >
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-200 mb-4">
+        <div className="flex justify-between items-center mt-4">
+          <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-200 ">
             Speech Recognition
           </h2>
 
@@ -114,7 +118,7 @@ const SpeechRecognition = () => {
           <button
             type="button"
             onClick={toggleDarkMode}
-            className="text-gray-700 dark:text-gray-200 focus:outline-none"
+            className="text-gray-700 dark:text-gray-200 focus:outline-none "
           >
             {isDarkMode ? <FaSun size={24} /> : <FaMoon size={24} />}
           </button>
@@ -145,9 +149,9 @@ const SpeechRecognition = () => {
                 onChange={changeLang}
                 className="border rounded-md p-2 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 focus:ring focus:ring-indigo-200 dark:focus:ring-indigo-500"
               >
-                {languageOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                {languages.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.name}
                   </option>
                 ))}
               </select>
