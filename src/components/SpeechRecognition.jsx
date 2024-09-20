@@ -147,10 +147,10 @@ const SpeechRecognition = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center  dark:bg-gray-900">
       <form
         id="speech-recognition-form"
-        className="space-y-6 p-6 max-w-xl w-full mx-auto bg-white dark:bg-gray-800 shadow-md rounded-md"
+        className="space-y-6 p-6 max-w-xl w-full mx-auto bg-white dark:bg-gray-800  rounded-md shadow-[0px_-4px_6px_rgba(0,0,0,0.1),0px_4px_6px_rgba(0,0,0,0.1)]"
       >
         <div className="flex justify-between items-center mt-4">
           <h2 className="text-2xl font-semibold text-gray-700 dark:text-gray-200 ">
