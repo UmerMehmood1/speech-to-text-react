@@ -1,5 +1,5 @@
 const languages = [
-  { code: "en-US", name: "American", flag: "https://flagcdn.com/w320/us.png" },
+  { code: "en-US", name: "English", flag: "https://flagcdn.com/w320/us.png" },
   { code: "ko-KR", name: "Korean", flag: "https://flagcdn.com/w320/kr.png" },
   { code: "ar-SA", name: "Arabic", flag: "https://flagcdn.com/w320/sa.png" },
   {
